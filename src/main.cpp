@@ -6,13 +6,10 @@ Camera camera;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height){
     glViewport(0, 0, width, height);
 }
-
-//process inputs
 void processInput(GLFWwindow *window){
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
-
 void mouse_callback(GLFWwindow* window, double xpos, double ypos){
     camera.mouseCallback(window, xpos, ypos);
 }
@@ -118,8 +115,6 @@ int main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-
-    
     unsigned int texture1, texture2;
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -130,6 +125,7 @@ int main() {
 
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true); 
+
     unsigned char *data = stbi_load("./textures/container.jpg", &width, &height, &nrChannels, 0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -183,15 +179,15 @@ int main() {
     
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f, 0.0f, 0.0f),
-        glm::vec3( 2.0f, 5.0f, -15.0f),
-        glm::vec3(-1.5f, -2.2f, -2.5f),
-        glm::vec3(-3.8f, -2.0f, -12.3f),
-        glm::vec3( 2.4f, -0.4f, -3.5f),
-        glm::vec3(-1.7f, 3.0f, -7.5f),
-        glm::vec3( 1.3f, -2.0f, -2.5f),
-        glm::vec3( 1.5f, 2.0f, -2.5f),
-        glm::vec3( 1.5f, 0.2f, -1.5f),
-        glm::vec3(-1.3f, 1.0f, -1.5f)
+        glm::vec3( 0.0f, 0.0f, 1.0f),
+        glm::vec3(-1.0f, 0.0f, 1.0f),
+        glm::vec3( 1.0f, 0.0f, 1.0f),
+        glm::vec3(-1.0f, 0.0f, 0.0f),
+        glm::vec3( 1.0f, 0.0f, 0.0f),
+        glm::vec3( -1.0f, 0.0f, -1.0f),
+        glm::vec3( 1.0f, 0.0f, -1.0f),
+        glm::vec3( 0.0f, 0.0f, -1.0f),
+        glm::vec3( -1.0f, 0.0f, 0.0f),
     };
     
     float deltaTime = 0.0f;
@@ -227,8 +223,6 @@ int main() {
         for(unsigned int i = 0; i < 10; i++){
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
-            model = glm::rotate(model, (float)glfwGetTime() * glm::radians(20.0f * (i+1)), glm::vec3(1.0f, 0.3f, 0.5f));
-
             shader.setMat4("model", model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }

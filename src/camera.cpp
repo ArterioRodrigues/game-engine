@@ -1,7 +1,7 @@
 #include <camera/camera.h>
 
 Camera::Camera(){
-    this->mCameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+    this->mCameraPos   = glm::vec3(0.0f, 0.0f, 5.0f);
     this->mCameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     this->mCameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -75,4 +75,6 @@ void Camera::mouseCallback(GLFWwindow* window, double xpos, double ypos){
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     this->mCameraFront = glm::normalize(direction);
+
+    std::cout << this->mCameraFront.x << this->mCameraFront.y << this->mCameraFront.z << std::endl;
 }
