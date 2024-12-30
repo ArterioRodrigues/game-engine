@@ -9,3 +9,5 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <camera/camera.h>
+
+#include <texture/texture.h>

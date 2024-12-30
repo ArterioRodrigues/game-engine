@@ -18,15 +18,15 @@ HEADER_FILES=()
 for file in $SRC_DIR/*; do
     if [[ $file == *.cpp || $file == *.c ]]; then
         SRC_FILES+=("$file")
+        echo -e "Source file: $file added"
     elif [[ $file == *.h ]]; then
         HEADER_FILES+=("$file")
+        echo -e "Header file: $file added"
     fi
 done
 
-# Print the files (for debugging purposes)
-echo "Source files: ${SRC_FILES[@]}"
-echo "Header files: ${HEADER_FILES[@]}"
-
+echo -e ""
+echo -e ""
 # Compile the program
 g++ -g -o $OUTPUT_FILE ${SRC_FILES[@]} -I$INCLUDE_DIR -L$LIB_DIR -lglfw3 -ldl -framework Cocoa -framework OpenGL -framework IOKit
 

@@ -1,7 +1,23 @@
 #include <camera/camera.h>
 
 Camera::Camera(){
-    this->mCameraPos   = glm::vec3(0.0f, 0.0f, 5.0f);
+    this->mCameraPos   = glm::vec3(0.0f, 0.0f, 3.0f);
+    this->mCameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+    this->mCameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
+
+    this->mCameraView = glm::mat4(1.0f);
+    this->mCameraView = glm::lookAt(this->mCameraPos, this->mCameraPos + this->mCameraFront, this->mCameraUp);
+
+    this->mCameraSpeed = 2.5f;
+    this->mMouseSensitivity = 0.1f;
+    this->mFirstMouseMove = true;
+
+    this->yaw = -90.0f;
+    this->pitch = 0.0f;
+}
+
+Camera::Camera(glm::vec3 view){
+    this->mCameraPos   = view;
     this->mCameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
     this->mCameraUp    = glm::vec3(0.0f, 1.0f, 0.0f);
 
@@ -34,6 +50,10 @@ void Camera::processInput(GLFWwindow *window, float deltaTime){
 
 glm::mat4 Camera::getCameraView(){
     return this->mCameraView;
+}
+
+glm::vec3 Camera::getCameraPos(){
+    return this->mCameraPos;
 }
 
 void Camera::lookAt(glm::vec3 x, glm::vec3 y, glm::vec3 z) {
@@ -75,6 +95,4 @@ void Camera::mouseCallback(GLFWwindow* window, double xpos, double ypos){
     direction.y = sin(glm::radians(pitch));
     direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
     this->mCameraFront = glm::normalize(direction);
-
-    std::cout << this->mCameraFront.x << this->mCameraFront.y << this->mCameraFront.z << std::endl;
 }
