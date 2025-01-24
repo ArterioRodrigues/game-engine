@@ -22,7 +22,7 @@ done < <(find "$INCLUDE_DIR" -type f \( -name "*.cpp" -o -name "*.c" \))
 
 echo ${SRC_FILES[@]}
 # Compile the program
-g++ -g -o $OUTPUT_FILE $MAIN_FILE ${SRC_FILES[@]} -I$INCLUDE_DIR -L$LIB_DIR -lglfw3 -ldl -framework Cocoa -framework OpenGL -framework IOKit
+g++ -std=c++17 -g -o $OUTPUT_FILE $MAIN_FILE ${SRC_FILES[@]} -I$INCLUDE_DIR -L$LIB_DIR -lglfw3 -ldl -framework Cocoa -framework OpenGL -framework IOKit
 
 # Check for success
 if [[ $? -eq 0 ]]; then

@@ -11,7 +11,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+glm::vec3 lightPos(3.2f, 1.0f, 2.0f);
 
 float frameCounter = 0;
 float prevFrame= static_cast<float>(glfwGetTime());
@@ -35,6 +35,22 @@ void printframeRate(float* currentFrame, float* prevFrame){
         std::cout << "FRAMES: " << frameCounter << std::endl;
         *prevFrame = *currentFrame;
         frameCounter = 0;
+    }
+}
+
+glm::vec3 getRandomVec3(float min, float max) {
+    auto randomFloat = [](float min, float max) -> float {
+        return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
+    };
+    return glm::vec3(randomFloat(min, max), randomFloat(min, max), randomFloat(min, max));
+}
+
+void generateRandomVec3Vector(int size, std::vector<glm::vec3>& vec, float min, float max) {
+    vec.clear();
+    vec.reserve(size);
+
+    for (int i = 0; i < size; ++i) {
+        vec.push_back(getRandomVec3(min, max));
     }
 }
 
@@ -70,8 +86,8 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     
 
-    Shader cubeShader("./shaders/texture-material/shader.vert", "./shaders/texture-material/shader.frag");
-    Shader lightCubeShader("./shaders/direct-light/shader.vert", "./shaders/direct-light/shader.frag");
+    Shader cubeShader("./shaders/direct-light/shader.vert", "./shaders/direct-light/shader.frag");
+    Shader lightCubeShader("./shaders/light/shader.vert", "./shaders/light/shader.frag");
 
     float vertices[] = {
         // positions          // normals           // texture coords
@@ -152,6 +168,10 @@ int main() {
     cubeShader.setInt("material.diffuse", 0);
     cubeShader.setInt("material.specular", 1);
 
+    std::vector<glm::vec3> cubePositions;
+    generateRandomVec3Vector(10, cubePositions, -3.0f, 3.0f);
+
+
     //Check each loop to see if window was closed
     while(!glfwWindowShouldClose(window)){
         
@@ -184,25 +204,32 @@ int main() {
         glm::mat4 view = CAMERA.getCameraView();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
-
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime() , glm::vec3(0.0, 1.0, 0.0));
-        cubeShader.setMat4("model", model);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, diffuseMap.getTextureID());
         
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, specularMap.getTextureID());
+        for(unsigned int i = 0; i < cubePositions.size(); i++){
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, cubePositions[i]);
+            float angle = 20.0f * i;
+            model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+            cubeShader.setMat4("model", model);
 
-        glBindVertexArray(cubeVAO); //Bind VAO with data
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+             glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, diffuseMap.getTextureID());
+            
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, specularMap.getTextureID());
+
+            glBindVertexArray(cubeVAO); //Bind VAO with data
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+       
+
+       
 
         lightCubeShader.use();
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);
 
-        model = glm::mat4(1.0f);
+        glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
         lightCubeShader.setMat4("model", model);

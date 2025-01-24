@@ -31,7 +31,7 @@ void main()
   	
     // diffuse 
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(-light.direction); //The direction is the only this that matters 
+    vec3 lightDir = normalize(light.direction); //The direction is the only this that matters 
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
     
