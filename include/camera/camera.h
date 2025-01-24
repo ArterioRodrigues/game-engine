@@ -23,8 +23,10 @@ class Camera {
 
     public:
         Camera();
+        Camera(glm::vec3 view);
 
         glm::mat4 getCameraView();
+        glm::vec3 getCameraPos();
 
         void processInput(GLFWwindow *window, float deltaTime);
         void lookAt(glm::vec3 x, glm::vec3 y, glm::vec3 z);
