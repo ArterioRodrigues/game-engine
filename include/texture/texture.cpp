@@ -1,6 +1,6 @@
 #include <texture/texture.h>
 
-Texture::Texture(const char* path, Type textureType){
+Texture::Texture(const char* path, ImageType textureType){
     glGenTextures(1, &this->mTextureID);
     glBindTexture(GL_TEXTURE_2D, this->mTextureID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);

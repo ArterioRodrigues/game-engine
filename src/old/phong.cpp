@@ -8,8 +8,6 @@ float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
 
-
-
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
@@ -49,7 +47,9 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    
+#ifdef __APPLE__
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+#endif
     //Create a window 
     GLFWwindow* window = glfwCreateWindow(800, 600, "ARC", NULL, NULL);
     if(window == NULL){
@@ -70,11 +70,10 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     
 
-    Shader cubeShader("./shaders/material/shader.vs", "./shaders/material/shader.fs");
-    Shader lightCubeShader("./shaders/light/shader.vs", "./shaders/light/shader.fs");
+    Shader cubeShader("./shaders/material/shader.vert", "./shaders/material/shader.frag");
+    Shader lightCubeShader("./shaders/light/shader.vert", "./shaders/light/shader.frag");
 
-    //Defines locations of the points that make up the shape
-     float vertices[] = {
+    float vertices[] = {
         -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
          0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
@@ -157,38 +156,31 @@ int main() {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f); //Specifies the color for the screen to be clear with
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 lightColor;
-        lightColor.x = sin(glfwGetTime() * 2.0f);
-        lightColor.y = sin(glfwGetTime() * 0.7f);
-        lightColor.z = sin(glfwGetTime() * 1.3f);
-
-        glm::vec3 diffuseColor = lightColor * glm::vec3(0.5f);
-        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f);
-
-        
+       ;
 
         cubeShader.use();
-        cubeShader.setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-        cubeShader.setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-        cubeShader.setVec3("lightPos", lightPos);
+        cubeShader.setVec3("light.position", lightPos);
         cubeShader.setVec3("viewPos", CAMERA.getCameraPos());
 
-        cubeShader.setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-        cubeShader.setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
-        cubeShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-        cubeShader.setFloat("material.shininess", 32.0f);
-
-        cubeShader.setVec3("light.ambient", ambientColor);
-        cubeShader.setVec3("light.diffuse", diffuseColor);
+        // light properties
+        cubeShader.setVec3("light.ambient", 1.0f, 1.0f, 1.0f); // note that all light colors are set at full intensity
+        cubeShader.setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
         cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 
-        glm::mat4 projection = glm::perspective(glm::radians(90.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        // material properties
+        cubeShader.setVec3("material.ambient", 0.0f, 0.1f, 0.06f);
+        cubeShader.setVec3("material.diffuse", 0.0f, 0.50980392f, 0.50980392f);
+        cubeShader.setVec3("material.specular", 0.50196078f, 0.50196078f, 0.50196078f);
+        cubeShader.setFloat("material.shininess", 32.0f);
+
+        glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+        //glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
         glm::mat4 view = CAMERA.getCameraView();
         cubeShader.setMat4("projection", projection);
         cubeShader.setMat4("view", view);
 
         glm::mat4 model = glm::mat4(1.0f);
-        //model = glm::rotate(model, glm::radians(90.0f) * (float)glfwGetTime() , glm::vec3(0.0, 1.0, 0.0));
+        model = glm::rotate(model, glm::radians(45.0f) * (float)glfwGetTime() , glm::vec3(0.0, 1.0, 0.0));
         cubeShader.setMat4("model", model);
         
         glBindVertexArray(cubeVAO); //Bind VAO with data

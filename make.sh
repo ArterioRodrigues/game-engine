@@ -1,7 +1,12 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <main file>"
+    exit 1
+fi
+
 # Set directories
-SRC_DIR="src"
+MAIN_FILE=$1
 INCLUDE_DIR="./include"
 LIB_DIR="./lib"
 OUTPUT_DIR="build"
@@ -11,24 +16,13 @@ OUTPUT_FILE="$OUTPUT_DIR/run"
 mkdir -p $OUTPUT_DIR
 
 # Initialize arrays
-SRC_FILES=()
-HEADER_FILES=()
+while IFS= read -r file; do
+    SRC_FILES+=("$file")
+done < <(find "$INCLUDE_DIR" -type f \( -name "*.cpp" -o -name "*.c" \))
 
-# Populate arrays with files from the source directory
-for file in $SRC_DIR/*; do
-    if [[ $file == *.cpp || $file == *.c ]]; then
-        SRC_FILES+=("$file")
-        echo -e "Source file: $file added"
-    elif [[ $file == *.h ]]; then
-        HEADER_FILES+=("$file")
-        echo -e "Header file: $file added"
-    fi
-done
-
-echo -e ""
-echo -e ""
+echo ${SRC_FILES[@]}
 # Compile the program
-g++ -g -o $OUTPUT_FILE ${SRC_FILES[@]} -I$INCLUDE_DIR -L$LIB_DIR -lglfw3 -ldl -framework Cocoa -framework OpenGL -framework IOKit
+g++ -g -o $OUTPUT_FILE $MAIN_FILE ${SRC_FILES[@]} -I$INCLUDE_DIR -L$LIB_DIR -lglfw3 -ldl -framework Cocoa -framework OpenGL -framework IOKit
 
 # Check for success
 if [[ $? -eq 0 ]]; then

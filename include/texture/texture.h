@@ -2,7 +2,7 @@
 #define TEXTURE_H
 #include <pch/pch.h>
 
-enum Type {
+enum ImageType {
     JPG, PNG
 };
 
@@ -14,7 +14,7 @@ class Texture {
         int mChannels;
 
     public:
-        Texture(const char* path, Type textureType);
+        Texture(const char* path, ImageType textureType = JPG);
         unsigned int getTextureID() const;
 };
 
