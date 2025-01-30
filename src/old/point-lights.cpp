@@ -37,14 +37,12 @@ void printframeRate(float* currentFrame, float* prevFrame){
         frameCounter = 0;
     }
 }
-
 glm::vec3 getRandomVec3(float min, float max) {
     auto randomFloat = [](float min, float max) -> float {
         return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / (max - min)));
     };
     return glm::vec3(randomFloat(min, max), randomFloat(min, max), randomFloat(min, max));
 }
-
 void generateRandomVec3Vector(int size, std::vector<glm::vec3>& vec, float min, float max) {
     vec.clear();
     vec.reserve(size);
@@ -86,7 +84,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     
 
-    Shader cubeShader("./shaders/direct-light/shader.vert", "./shaders/direct-light/shader.frag");
+    Shader cubeShader("./shaders/point-light/shader.vert", "./shaders/point-light/shader.frag");
     Shader lightCubeShader("./shaders/light/shader.vert", "./shaders/light/shader.frag");
 
     float vertices[] = {
@@ -187,13 +185,17 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         cubeShader.use();
-        cubeShader.setVec3("light.direction", lightPos);
+        cubeShader.setVec3("light.position", lightPos);
         cubeShader.setVec3("viewPos", CAMERA.getCameraPos());
 
         // light properties
         cubeShader.setVec3("light.ambient", 0.2f, 0.2f, 0.2f); // note that all light colors are set at full intensity
         cubeShader.setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
         cubeShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+        cubeShader.setFloat("light.constant", 1.0f);
+        cubeShader.setFloat("light.linear", 0.09f);
+        cubeShader.setFloat("light.quadratic", 0.032f);
 
         // material properties
         cubeShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
@@ -222,9 +224,6 @@ int main() {
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
        
-
-       
-
         lightCubeShader.use();
         lightCubeShader.setMat4("projection", projection);
         lightCubeShader.setMat4("view", view);

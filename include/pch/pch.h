@@ -17,3 +17,7 @@
 #include <shader/shader.h>
 #include <camera/camera.h>
 #include <texture/texture.h>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>

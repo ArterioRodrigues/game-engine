@@ -27,7 +27,8 @@ class Camera {
 
         glm::mat4 getCameraView();
         glm::vec3 getCameraPos();
-
+        glm::vec3 getCameraFront();
+        
         void processInput(GLFWwindow *window, float deltaTime);
         void lookAt(glm::vec3 x, glm::vec3 y, glm::vec3 z);
         void setCameraSpeed(float speed);

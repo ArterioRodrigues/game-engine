@@ -56,6 +56,10 @@ glm::vec3 Camera::getCameraPos(){
     return this->mCameraPos;
 }
 
+glm::vec3 Camera::getCameraFront(){
+    return this->mCameraFront;
+}
+
 void Camera::lookAt(glm::vec3 x, glm::vec3 y, glm::vec3 z) {
     this->mCameraView = glm::lookAt(x, y, z);
 }
