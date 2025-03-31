@@ -52,6 +52,13 @@
         "variant": "cpp",
         "algorithm": "cpp",
         "complex": "cpp",
-        "memory": "cpp"
+        "memory": "cpp",
+        "__tree": "cpp",
+        "charconv": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp"
     }
 }
